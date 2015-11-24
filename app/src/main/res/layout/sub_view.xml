@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<li.vin.uiconcepts.view.SubView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sub_view"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+  <Space
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      />
+
+  <Button
+      android:id="@+id/sub_poppy"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:gravity="center"
+      android:text="POPPY!!!"
+      tools:ignore="HardcodedText"
+      />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.25"
+        />
+
+  <Button
+      android:id="@+id/sub_showy"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:gravity="center"
+      tools:text="SHOWY!!!"
+      tools:ignore="HardcodedText"
+      />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.25"
+        />
+
+  <Button
+      android:id="@+id/sub_navvy"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:gravity="center"
+      android:text="NAVVY!!!"
+      tools:ignore="HardcodedText"
+      />
+
+  <Space
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      />
+
+</li.vin.uiconcepts.view.SubView>

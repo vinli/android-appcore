@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Math.min(screenWidth — actionBarSize, 6 * actionBarSize) -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawerscrollview"
+    android:layout_width="320dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="left|start"
+    android:fillViewport="true"
+    android:background="@android:color/white"
+    android:fitsSystemWindows="true"
+    tools:ignore="RtlHardcoded"
+    >
+
+  <!--<LinearLayout-->
+      <!--android:id="@+id/drawerlinearlayout"-->
+      <!--android:layout_width="match_parent"-->
+      <!--android:layout_height="wrap_content"-->
+      <!--android:orientation="vertical"-->
+      <!-->-->
+
+  <!--</LinearLayout>-->
+
+</ScrollView>

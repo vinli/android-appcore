@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ab_custom_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minWidth="10000dp"
+    >
+
+  <TextView
+      android:id="@+id/ab_custom_view_text"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:gravity="center"
+      android:text="CUSTOM VIEW"
+      tools:ignore="HardcodedText"
+      android:textColor="@android:color/white"
+      />
+
+</FrameLayout>

@@ -1,0 +1,68 @@
+apply plugin: 'com.jfrog.bintray'
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    def variants = android.hasProperty('applicationVariants') \
+        ? android.applicationVariants \
+        : android.libraryVariants
+
+    source = variants.release.javaCompile.source
+    classpath = files(variants.release.javaCompile.classpath.files, android.bootClasspath)
+
+    options.links("https://docs.oracle.com/javase/7/docs/api/");
+    options.linksOffline("http://d.android.com/reference", "${android.sdkDirectory}/docs/reference");
+    exclude '**/BuildConfig.java'
+    exclude '**/R.java'
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+// Bintray
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty('bintray.user')
+    key = properties.getProperty('bintray.apikey')
+
+    configurations = ['archives']
+
+    dryRun = project.hasProperty('vinli.dryRun') \
+            ? project.property('vinli.dryRun') \
+            : false
+    publish = project.hasProperty('vinli.publish') \
+            ? project.property('vinli.publish') \
+            : false
+
+    pkg {
+        repo = project.property('vinli.groupId')
+        name = project.property('vinli.artifactId')
+        userOrg = 'vinli'
+        desc = project.property('vinli.desc')
+        websiteUrl = "https://github.com/vinli/${project.property('vinli.githubRepo')}"
+        vcsUrl = "git://github.com/vinli/${project.property('vinli.githubRepo')}.git"
+        issueTrackerUrl = "https://github.com/vinli/${project.property('vinli.githubRepo')}/issues"
+        licenses = ['MIT']
+        labels = ['android', 'vinli']
+        publicDownloadNumbers = project.hasProperty('vinli.publicDownloadNumbers') \
+            ? project.property('vinli.publicDownloadNumbers') \
+            : false
+        version {
+            name = project.property('vinli.version')
+            vcsTag = project.property('vinli.version')
+            released = new Date()
+        }
+    }
+}

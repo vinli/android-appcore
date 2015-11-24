@@ -1,0 +1,5 @@
+<resources>
+  <string name="app_name">UiConcepts</string>
+  <string name="drawer_open">Open Menu</string>
+  <string name="drawer_close">Close Menu</string>
+</resources>

@@ -1,0 +1,20 @@
+<resources>
+
+  <!-- Base application theme. -->
+  <style name="AppThemeBase"
+      parent="Theme.AppCompat.Light.DarkActionBar">
+
+    <item name="windowActionBar">false</item>
+    <item name="windowNoTitle">true</item>
+    <item name="android:windowActionBar">false</item>
+    <item name="android:windowNoTitle">true</item>
+
+  </style>
+
+  <style name="AppTheme"
+      parent="AppThemeBase">
+  </style>
+
+  <style name="ToolbarElevation"/>
+
+</resources>

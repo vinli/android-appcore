@@ -1,0 +1,16 @@
+# IntelliJ IDEA
+.idea
+*.iml
+gen
+
+# Maven
+target/
+pom.xml.versionsBackup
+
+# Gradle
+.gradle
+gradlew.bat
+build
+local.properties
+app/src/main/java/li/vin%D0uiconcepts/
+appcore/src/main/java/li/vin%D0appcore/
