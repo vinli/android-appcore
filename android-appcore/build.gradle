@@ -45,8 +45,8 @@ android {
 
 dependencies {
   // support
-  compile 'com.android.support:appcompat-v7:23.0.0'
-  compile 'com.android.support:recyclerview-v7:23.0.0'
+  compile 'com.android.support:appcompat-v7:+'
+  compile 'com.android.support:recyclerview-v7:+'
 
   // mortar & flow
   compile 'com.squareup.mortar:mortar:0.19'
@@ -59,7 +59,7 @@ dependencies {
   compile 'org.glassfish:javax.annotation:10.0-b28'
 
   // json
-  compile 'com.google.code.gson:gson:2.3.1'
+  compile 'com.google.code.gson:gson:2.+'
 
   // buttery goodness
   compile 'com.jakewharton:butterknife:7.0.1'
