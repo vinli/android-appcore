@@ -14,6 +14,7 @@ import butterknife.ButterKnife;
 class ScreenViewImpl<V extends View & ScreenView, VP extends ScreenViewPresenter<V>> {
 
   private boolean allowScreenViewCalls;
+  private boolean attachedToWindow;
 
   void onCreateImpl(@NonNull V v, @NonNull Context context) {
     if (!v.isInEditMode()) {
@@ -65,6 +66,10 @@ class ScreenViewImpl<V extends View & ScreenView, VP extends ScreenViewPresenter
   }
 
   public void onAttachedToWindowImpl(@NonNull V v) {
+
+    if (attachedToWindow) return;
+    attachedToWindow = true;
+
     // SUPER
     allowScreenViewCalls = true;
     v.onAttach();
@@ -86,6 +91,8 @@ class ScreenViewImpl<V extends View & ScreenView, VP extends ScreenViewPresenter
     v.onDetach();
     allowScreenViewCalls = false;
     // SUPER
+
+    attachedToWindow = false;
   }
 
   protected void onVisibilityChangedImpl(@NonNull V v, @NonNull View changedView, int visibility) {
