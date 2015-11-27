@@ -294,6 +294,17 @@ public abstract class MortarFlowAppCompatActivity extends AppCompatActivity
     return presentSplash(true);
   }
 
+  protected final boolean splashIsShowing() {
+    if (isFinishing()) return false;
+    Screen splashScreen = getSplashScreen();
+    if (splashScreen == null) return false;
+    ViewGroup splashHost = (ViewGroup) findViewById(getSplashContainerViewResId());
+    if (splashHost == null) {
+      throw new RuntimeException("Splash screen found with no container layout.");
+    }
+    return (splashHost.getChildCount() != 0);
+  }
+
   private SplashPresenter presentSplash(boolean immediatelySetFlow) {
     if (isFinishing()) return null;
     Screen splashScreen = getSplashScreen();
@@ -423,6 +434,7 @@ public abstract class MortarFlowAppCompatActivity extends AppCompatActivity
   /** Inform the view about up events and dispatch options item selected events. */
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
+    if (splashIsShowing()) return true; // dispatch no menu events when splash is visible.
     if (!disableHome) {
       if (drawerToggle != null && drawerToggle.onOptionsItemSelected(item)) return true;
       if (item.getItemId() == android.R.id.home) return container.onBackPressed();
