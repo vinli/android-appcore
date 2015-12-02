@@ -1,0 +1,55 @@
+buildscript {
+  repositories {
+    mavenCentral()
+    jcenter()
+  }
+}
+
+group = project.property('vinli.groupId')
+version = project.property('vinli.version')
+
+apply plugin: 'com.android.library'
+apply from: file('../gradle/checkstyle.gradle')
+apply from: file('../gradle/javadoc.gradle')
+
+android {
+  compileSdkVersion 23
+  buildToolsVersion "23.0.2"
+
+  defaultConfig {
+    minSdkVersion 16
+    targetSdkVersion 23
+    versionCode 1
+    versionName "1.0"
+  }
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_7
+    targetCompatibility JavaVersion.VERSION_1_7
+  }
+
+  lintOptions {
+    abortOnError false
+  }
+}
+
+dependencies {
+  provided project(':android-appcore')
+
+  // Dependencies for local unit tests
+  provided 'com.squareup.assertj:assertj-android:1.+'
+  provided "junit:junit:4.+"
+  provided "org.mockito:mockito-all:1.+"
+  provided "org.hamcrest:hamcrest-all:1.+"
+  provided "org.powermock:powermock-module-junit4:1.+"
+  provided "org.powermock:powermock-api-mockito:1.+"
+}
+
+apply from: file('../gradle/mavenize.gradle')
+apply from: file('../gradle/bintray-upload.gradle')
