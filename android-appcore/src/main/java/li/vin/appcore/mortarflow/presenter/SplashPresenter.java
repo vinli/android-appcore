@@ -50,7 +50,6 @@ public class SplashPresenter extends ScreenViewPresenter<SplashScreenView> {
   @Override
   public void dropView(SplashScreenView view) {
     super.dropView(view);
-    mainFlow = null;
   }
 
   @NonNull
@@ -61,7 +60,6 @@ public class SplashPresenter extends ScreenViewPresenter<SplashScreenView> {
 
   public final void setMainFlow(Flow flow) {
     if (flow == null) throw new NullPointerException();
-    if (mainFlow != null) throw new IllegalStateException("Flow already set.");
     mainFlow = flow;
   }
 
@@ -73,7 +71,6 @@ public class SplashPresenter extends ScreenViewPresenter<SplashScreenView> {
 
   public final void setDrawerPresenter(DrawerPresenter drawer) {
     if (drawer == null) throw new NullPointerException();
-    if (drawerPresenter != null) throw new IllegalStateException("DrawerPresenter already set.");
     drawerPresenter = drawer;
   }
 }
