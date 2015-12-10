@@ -2,4 +2,39 @@
 <resources>
   <item type="id" name="screen_switcher_tag"/>
   <item type="id" name="action_search"/>
+
+  <!-- Reusable fragment container IDs to avoid screens clashing over fragment container IDs. -->
+  <item type="id"
+      name="reusable_fragment_container_0"/>
+  <item type="id"
+      name="reusable_fragment_container_1"/>
+  <item type="id"
+      name="reusable_fragment_container_2"/>
+  <item type="id"
+      name="reusable_fragment_container_3"/>
+  <item type="id"
+      name="reusable_fragment_container_4"/>
+  <item type="id"
+      name="reusable_fragment_container_5"/>
+  <item type="id"
+      name="reusable_fragment_container_6"/>
+  <item type="id"
+      name="reusable_fragment_container_7"/>
+  <item type="id"
+      name="reusable_fragment_container_8"/>
+  <item type="id"
+      name="reusable_fragment_container_9"/>
+  <item type="id"
+      name="reusable_fragment_container_10"/>
+  <item type="id"
+      name="reusable_fragment_container_11"/>
+  <item type="id"
+      name="reusable_fragment_container_12"/>
+  <item type="id"
+      name="reusable_fragment_container_13"/>
+  <item type="id"
+      name="reusable_fragment_container_14"/>
+  <item type="id"
+      name="reusable_fragment_container_15"/>
+
 </resources>
