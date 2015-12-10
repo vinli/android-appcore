@@ -8,7 +8,6 @@ import android.os.Parcelable;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.MenuItem;
@@ -23,7 +22,7 @@ import li.vin.appcore.mortarflow.android.HandlesPauseResume;
  */
 public abstract class RecyclerViewScreenView< //
     V extends RecyclerViewScreenView, VP extends ScreenViewPresenter<V>> //
-    extends RecyclerView //
+    extends RecyclerViewDelayedRestoreState //
     implements ScreenView<V, VP>, HandlesBack, HandlesActivityResult, HandlesOptionsItemSelected,
     HandlesPauseResume, HandlesTransientParams {
 
@@ -205,7 +204,6 @@ public abstract class RecyclerViewScreenView< //
   @CallSuper
   @Override
   public void restoreState(Parcelable state) {
-    delayedState = state;
     impl.assertAllowScreenViewCalls();
   }
 
@@ -288,59 +286,4 @@ public abstract class RecyclerViewScreenView< //
     dispatchPreChildRemoval(child);
     super.removeDetachedView(child, animate);
   }
-
-  // --------------------------------------------------------- //
-  // --------------------------------------------------------- //
-
-  private Parcelable delayedState;
-  private boolean stateRestored;
-
-  @Override
-  public void setAdapter(Adapter adapter) {
-    if (getAdapter() != null) getAdapter().unregisterAdapterDataObserver(dataObserver);
-    if (adapter != null) adapter.registerAdapterDataObserver(dataObserver);
-    doRestoreState(adapter);
-    super.setAdapter(adapter);
-  }
-
-  private void doRestoreState(Adapter adapter) {
-    if (stateRestored || adapter == null || adapter.getItemCount() == 0) return;
-    stateRestored = true;
-    if (delayedState != null) {
-      super.onRestoreInstanceState(delayedState);
-      delayedState = null;
-    }
-  }
-
-  private final AdapterDataObserver dataObserver = new AdapterDataObserver() {
-    @Override
-    public void onChanged() {
-      doRestoreState(getAdapter());
-    }
-
-    @Override
-    public void onItemRangeChanged(int positionStart, int itemCount) {
-      doRestoreState(getAdapter());
-    }
-
-    @Override
-    public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
-      doRestoreState(getAdapter());
-    }
-
-    @Override
-    public void onItemRangeInserted(int positionStart, int itemCount) {
-      doRestoreState(getAdapter());
-    }
-
-    @Override
-    public void onItemRangeRemoved(int positionStart, int itemCount) {
-      doRestoreState(getAdapter());
-    }
-
-    @Override
-    public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
-      doRestoreState(getAdapter());
-    }
-  };
 }
