@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +32,7 @@ import static android.support.v4.app.ActivityCompat.requestPermissions;
 import static android.support.v4.content.ContextCompat.checkSelfPermission;
 import static java.lang.Math.min;
 
+@SuppressWarnings("unused")
 public final class RequestPermissionService implements Scoped {
   public static final String SERVICE_NAME = RequestPermissionService.class.getName();
 
@@ -41,6 +43,95 @@ public final class RequestPermissionService implements Scoped {
 
   public static RequestPermissionService getRequestPermissionService(MortarScope scope) {
     return scope.getService(SERVICE_NAME);
+  }
+
+  public static boolean requestIgnoreBatteryOptimizations(@NonNull Context context,
+      @NonNull RequestIgnoreBatteryOptimizationsCallback cb) {
+    try {
+      getRequestPermissionService(context).requestIgnoreBatteryOptimizations(cb);
+      return true;
+    } catch (Exception ex) {
+      Log.e(SERVICE_NAME, "requestIgnoreBatteryOptimizations failed.", ex);
+    }
+    return false;
+  }
+
+  public static boolean requestIgnoreBatteryOptimizations(@NonNull View view,
+      @NonNull RequestIgnoreBatteryOptimizationsCallback cb) {
+    return requestIgnoreBatteryOptimizations(view.getContext(), cb);
+  }
+
+  public static boolean removeRequestBatteryOptimizationCallback(@NonNull Context context,
+      @NonNull RequestIgnoreBatteryOptimizationsCallback cb) {
+    try {
+      getRequestPermissionService(context).removeRequestBatteryOptimizationCallback(cb);
+      return true;
+    } catch (Exception ex) {
+      Log.e(SERVICE_NAME, "removeRequestBatteryOptimizationCallback failed.", ex);
+    }
+    return false;
+  }
+
+  public static boolean removeRequestBatteryOptimizationCallback(@NonNull View view,
+      @NonNull RequestIgnoreBatteryOptimizationsCallback cb) {
+    return removeRequestBatteryOptimizationCallback(view.getContext(), cb);
+  }
+
+  public static boolean needsPermission(@NonNull Context context, @NonNull String[] permissions) {
+    try {
+      return getRequestPermissionService(context).needsPermission(permissions);
+    } catch (Exception ex) {
+      Log.e(SERVICE_NAME, "needsPermission failed.", ex);
+    }
+    return false;
+  }
+
+  public static boolean needsPermission(@NonNull View view, @NonNull String[] permissions) {
+    return needsPermission(view.getContext(), permissions);
+  }
+
+  public static boolean needsRationale(@NonNull Context context, @NonNull String[] permissions) {
+    try {
+      return getRequestPermissionService(context).needsRationale(permissions);
+    } catch (Exception ex) {
+      Log.e(SERVICE_NAME, "needsRationale failed.", ex);
+    }
+    return false;
+  }
+
+  public static boolean needsRationale(@NonNull View view, @NonNull String[] permissions) {
+    return needsRationale(view.getContext(), permissions);
+  }
+
+  public static boolean requestPermission(@NonNull Context context, @NonNull String[] permissions,
+      @NonNull RequestPermissionCallback cb) {
+    try {
+      getRequestPermissionService(context).requestPermission(permissions, cb);
+      return true;
+    } catch (Exception ex) {
+      Log.e(SERVICE_NAME, "requestPermission failed.", ex);
+    }
+    return false;
+  }
+
+  public static boolean requestPermission(@NonNull View view, @NonNull String[] permissions,
+      @NonNull RequestPermissionCallback cb) {
+    return requestPermission(view.getContext(), permissions, cb);
+  }
+
+  public static boolean removeCallback(@NonNull Context context,
+      @NonNull RequestPermissionCallback cb) {
+    try {
+      getRequestPermissionService(context).removeCallback(cb);
+      return true;
+    } catch (Exception ex) {
+      Log.e(SERVICE_NAME, "removeCallback failed.", ex);
+    }
+    return false;
+  }
+
+  public static boolean removeCallback(@NonNull View view, @NonNull RequestPermissionCallback cb) {
+    return removeCallback(view.getContext(), cb);
   }
 
   public interface RequestPermissionCallback {
