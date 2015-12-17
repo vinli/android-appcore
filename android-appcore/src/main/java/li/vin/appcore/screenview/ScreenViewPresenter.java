@@ -194,12 +194,25 @@ public class ScreenViewPresenter<V extends View & ScreenView> extends ViewPresen
   protected void onResume(@NonNull V v) {
   }
 
+  protected void toastShort(@StringRes int messageResId) {
+    toast(messageResId, Toast.LENGTH_LONG);
+  }
+
   protected void toastShort(String message) {
     toast(message, Toast.LENGTH_LONG);
   }
 
+  protected void toastLong(@StringRes int messageResId) {
+    toast(messageResId, Toast.LENGTH_LONG);
+  }
+
   protected void toastLong(String message) {
     toast(message, Toast.LENGTH_LONG);
+  }
+
+  private void toast(@StringRes int messageResId, int length) {
+    if (!hasView()) return;
+    Toast.makeText(getView().getContext(), messageResId, length).show();
   }
 
   private void toast(String message, int length) {
