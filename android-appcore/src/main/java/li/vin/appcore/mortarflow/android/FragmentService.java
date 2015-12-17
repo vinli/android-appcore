@@ -31,7 +31,6 @@ public final class FragmentService implements Scoped {
       R.id.reusable_fragment_container_6, //
       R.id.reusable_fragment_container_7, //
       R.id.reusable_fragment_container_8, //
-      R.id.reusable_fragment_container_8, //
       R.id.reusable_fragment_container_9, //
       R.id.reusable_fragment_container_10, //
       R.id.reusable_fragment_container_11, //
