@@ -42,9 +42,11 @@ interface ScreenView<V extends View & ScreenView, VP extends ScreenViewPresenter
   @Nullable
   Bundle onProvideParams(@NonNull android.view.View view, @Nullable Bundle params);
 
-  /** Called after inflate, but before attach to receive optional transient params from the source
+  /**
+   * Called after inflate, but before attach to receive optional transient params from the source
    * of this View's creation. These parameters are transient; they will not be preserved across
-   * restorations of state. */
+   * restorations of state.
+   */
   void onReceiveParams(@Nullable Bundle params);
 
   /** Lifecycle-safe proxy for {@link View#onAttachedToWindow()}. */

@@ -42,6 +42,8 @@ public class ActionBarPresenter extends Presenter<ActionBarPresenter.Activity> {
   public static final String ACTION_BAR_CUSTOM = "ACTION_BAR_CUSTOM";
   public static final String ACTION_BAR_TITLE = "ACTION_BAR_TITLE";
   public static final String ACTION_BAR_SUBTITLE = "ACTION_BAR_SUBTITLE";
+  public static final String ACTION_BAR_TITLE_TYPEFACE = "ACTION_BAR_TITLE_TYPEFACE";
+  public static final String ACTION_BAR_SUBTITLE_TYPEFACE = "ACTION_BAR_SUBTITLE_TYPEFACE";
   public static final String ACTION_BAR_MENUS = "ACTION_BAR_MENUS";
 
   @SuppressWarnings("unchecked")
@@ -95,6 +97,14 @@ public class ActionBarPresenter extends Presenter<ActionBarPresenter.Activity> {
 
     public final T subTitle(@NonNull CharSequence subTitle) {
       return charSequence(ACTION_BAR_SUBTITLE, subTitle);
+    }
+
+    public final T titleTypeface(@NonNull String typefaceAssetPath) {
+      return charSequence(ACTION_BAR_TITLE_TYPEFACE, typefaceAssetPath);
+    }
+
+    public final T subTitleTypeface(@NonNull String typefaceAssetPath) {
+      return charSequence(ACTION_BAR_SUBTITLE_TYPEFACE, typefaceAssetPath);
     }
 
     public final T menus(@NonNull int... menus) {

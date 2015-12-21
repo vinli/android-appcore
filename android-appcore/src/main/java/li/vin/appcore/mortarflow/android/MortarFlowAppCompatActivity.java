@@ -59,6 +59,7 @@ import mortar.MortarScopeDevHelper;
 import mortar.bundler.BundleServiceRunner;
 
 import static android.support.v4.widget.CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER;
+import static li.vin.appcore.TypefaceUtil.spanWithTypeface;
 import static li.vin.appcore.mortarflow.android.RequestPermissionService.getRequestPermissionService;
 
 /**
@@ -597,11 +598,15 @@ public abstract class MortarFlowAppCompatActivity extends AppCompatActivity
     int custom = config.getInt(ActionBarPresenter.ACTION_BAR_CUSTOM, -1);
     CharSequence title = config.getCharSequence(ActionBarPresenter.ACTION_BAR_TITLE, null);
     CharSequence subTitle = config.getCharSequence(ActionBarPresenter.ACTION_BAR_SUBTITLE, null);
+    CharSequence titleTypefaceAssetPath =
+        config.getCharSequence(ActionBarPresenter.ACTION_BAR_TITLE_TYPEFACE, null);
+    CharSequence subTitleTypefaceAssetPath =
+        config.getCharSequence(ActionBarPresenter.ACTION_BAR_SUBTITLE_TYPEFACE, null);
     int[] menus = config.getIntArray(ActionBarPresenter.ACTION_BAR_MENUS);
 
     if (invis != -1) {
       setAbInvis();
-      setAbTitles(null, null);
+      setAbTitles(null, null, null, null);
       actionBar().setElevation(0);
       actionBar().setBackgroundDrawable(new ColorDrawable(invis));
       setAbCustom(-1);
@@ -632,7 +637,7 @@ public abstract class MortarFlowAppCompatActivity extends AppCompatActivity
       setAbUp(false);
     }
 
-    setAbTitles(title, subTitle);
+    setAbTitles(title, subTitle, titleTypefaceAssetPath, subTitleTypefaceAssetPath);
     setAbBg(bg);
     setAbCustom(custom);
     setAbMenu(menus);
@@ -707,10 +712,21 @@ public abstract class MortarFlowAppCompatActivity extends AppCompatActivity
     }
   }
 
-  private void setAbTitles(CharSequence title, CharSequence subTitle) {
+  private void setAbTitles(CharSequence title, CharSequence subTitle,
+      CharSequence titleTypefaceAssetPath, CharSequence subTitleTypefaceAssetPath) {
     ActionBar actionBar = actionBar();
     boolean hasTitle = !(title == null || TextUtils.getTrimmedLength(title) == 0);
     boolean hasSub = !(subTitle == null || TextUtils.getTrimmedLength(subTitle) == 0);
+    boolean hasTitleTf = !(titleTypefaceAssetPath == null || //
+        TextUtils.getTrimmedLength(titleTypefaceAssetPath) == 0);
+    boolean hasSubTitleTf = !(subTitleTypefaceAssetPath == null || //
+        TextUtils.getTrimmedLength(subTitleTypefaceAssetPath) == 0);
+    if (hasTitle && hasTitleTf) {
+      title = spanWithTypeface(this, titleTypefaceAssetPath.toString(), title);
+    }
+    if (hasSub && hasSubTitleTf) {
+      subTitle = spanWithTypeface(this, subTitleTypefaceAssetPath.toString(), subTitle);
+    }
     actionBar.setDisplayShowTitleEnabled(hasTitle);
     actionBar.setTitle(hasTitle
         ? title
