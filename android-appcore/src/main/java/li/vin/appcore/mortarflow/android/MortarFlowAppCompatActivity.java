@@ -471,7 +471,7 @@ public abstract class MortarFlowAppCompatActivity extends AppCompatActivity
       }
     }
 
-    MenuItem searchItem = menu.findItem(R.id.action_search);
+    final MenuItem searchItem = menu.findItem(R.id.action_search);
     if (searchItem != null) {
       final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
       if (searchView != null) {
@@ -505,6 +505,7 @@ public abstract class MortarFlowAppCompatActivity extends AppCompatActivity
             MatrixCursor c = (MatrixCursor) searchView.getSuggestionsAdapter().getItem(position);
             String suggestion = c.getString(1);
             if (suggestion == null) suggestion = "";
+            searchItem.collapseActionView();
             MortarFlowAppCompatActivity.this.onQueryTextSubmit(suggestion);
             return false;
           }
@@ -514,6 +515,7 @@ public abstract class MortarFlowAppCompatActivity extends AppCompatActivity
           @Override
           public boolean onQueryTextSubmit(String query) {
             if (query == null) query = "";
+            searchItem.collapseActionView();
             MortarFlowAppCompatActivity.this.onQueryTextSubmit(query);
             return false;
           }
