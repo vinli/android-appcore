@@ -8,7 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.functions.Action0;
@@ -34,6 +36,9 @@ public final class ViewGroupLoader implements Action0 {
         .doOnUnsubscribe(vgl)
         .delaySubscription(delaySub, TimeUnit.MILLISECONDS);
   }
+
+  private static final Handler HANDLER = new Handler(Looper.getMainLooper());
+  private static final Set<Runnable> pendingStops = new HashSet<>();
 
   private ViewGroup root;
   private View progressIndicator;
@@ -61,12 +66,19 @@ public final class ViewGroupLoader implements Action0 {
   private void startLoading() {
     if (root == null || progressIndicator == null || progressIndicator.getParent() != null) return;
 
+    synchronized (pendingStops) {
+      HANDLER.removeCallbacksAndMessages(ViewGroupLoader.class);
+      for (Runnable r : new HashSet<>(pendingStops)) {
+        r.run();
+      }
+    }
+
     int rootW = root.getWidth();
     int rootH = root.getHeight();
     if (rootW == 0 || rootH == 0 || delay > 0) {
       long delay = this.delay;
       this.delay = 0;
-      new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+      HANDLER.postDelayed(new Runnable() {
         @Override
         public void run() {
           startLoading();
@@ -107,12 +119,18 @@ public final class ViewGroupLoader implements Action0 {
 
   @Override
   public void call() {
-    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-      @Override
-      public void run() {
-        stopLoading();
-      }
-    }, Math.max(0, min - (System.currentTimeMillis() - startTime)));
+    synchronized (pendingStops) {
+      Runnable r = new Runnable() {
+        @Override
+        public void run() {
+          HANDLER.removeCallbacks(this);
+          pendingStops.remove(this);
+          stopLoading();
+        }
+      };
+      pendingStops.add(r);
+      HANDLER.postDelayed(r, Math.max(0, min - (System.currentTimeMillis() - startTime)));
+    }
   }
 
   private static final class ViewVis {
