@@ -8,10 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 import rx.Observable;
 import rx.functions.Action0;
 
@@ -38,7 +42,40 @@ public final class ViewGroupLoader implements Action0 {
   }
 
   private static final Handler HANDLER = new Handler(Looper.getMainLooper());
-  private static final Set<Runnable> pendingStops = new HashSet<>();
+  private static final Map<ViewGroupLoader, Set<Runnable>> pendingStops = new HashMap<>();
+
+  private static void addPendingStop(@NonNull ViewGroupLoader view, @NonNull Runnable r) {
+    synchronized (pendingStops) {
+      Set<Runnable> stops = pendingStops.get(view);
+      if (stops == null) pendingStops.put(view, stops = new HashSet<>());
+      stops.add(r);
+    }
+  }
+
+  private static void removePendingStop(@NonNull Runnable r) {
+    synchronized (pendingStops) {
+      if (pendingStops.isEmpty()) return;
+      for (Iterator<Map.Entry<ViewGroupLoader, Set<Runnable>>> i =
+          pendingStops.entrySet().iterator(); i.hasNext(); ) {
+        Set<Runnable> runnables = i.next().getValue();
+        if (runnables.remove(r) && runnables.isEmpty()) i.remove();
+      }
+    }
+  }
+
+  private static void runAllPendingStops(@NonNull ViewGroupLoader view) {
+    synchronized (pendingStops) {
+      if (pendingStops.isEmpty()) return;
+      Set<Runnable> toRun = new HashSet<>();
+      for (Map.Entry<ViewGroupLoader, Set<Runnable>> entry : pendingStops.entrySet()) {
+        ViewGroupLoader vgl = entry.getKey();
+        if (vgl.root == view.root && view != vgl) toRun.addAll(entry.getValue());
+      }
+      for (Runnable r : toRun) {
+        r.run();
+      }
+    }
+  }
 
   private ViewGroup root;
   private View progressIndicator;
@@ -46,7 +83,7 @@ public final class ViewGroupLoader implements Action0 {
   private long min;
   private final List<ViewVis> loadingViews = new ArrayList<>();
 
-  long startTime;
+  private final AtomicLong startTime = new AtomicLong();
 
   private ViewGroupLoader(@NonNull ViewGroup root, @LayoutRes int progressLayout, long delay,
       long min) {
@@ -64,13 +101,9 @@ public final class ViewGroupLoader implements Action0 {
   }
 
   private void startLoading() {
-    if (root == null || progressIndicator == null || progressIndicator.getParent() != null) return;
-
-    synchronized (pendingStops) {
-      HANDLER.removeCallbacksAndMessages(ViewGroupLoader.class);
-      for (Runnable r : new HashSet<>(pendingStops)) {
-        r.run();
-      }
+    runAllPendingStops(this);
+    if (root == null || progressIndicator == null || progressIndicator.getParent() != null) {
+      return;
     }
 
     int rootW = root.getWidth();
@@ -101,7 +134,7 @@ public final class ViewGroupLoader implements Action0 {
     lp.width = targetW;
     lp.height = targetH;
 
-    startTime = System.currentTimeMillis();
+    startTime.compareAndSet(0, System.currentTimeMillis());
   }
 
   private void stopLoading() {
@@ -119,18 +152,19 @@ public final class ViewGroupLoader implements Action0 {
 
   @Override
   public void call() {
-    synchronized (pendingStops) {
-      Runnable r = new Runnable() {
-        @Override
-        public void run() {
-          HANDLER.removeCallbacks(this);
-          pendingStops.remove(this);
-          stopLoading();
-        }
-      };
-      pendingStops.add(r);
-      HANDLER.postDelayed(r, Math.max(0, min - (System.currentTimeMillis() - startTime)));
-    }
+    Runnable r = new Runnable() {
+      @Override
+      public void run() {
+        HANDLER.removeCallbacks(this);
+        removePendingStop(this);
+        stopLoading();
+      }
+    };
+    addPendingStop(this, r);
+    long curMs = System.currentTimeMillis();
+    startTime.compareAndSet(0, curMs);
+    long dl = Math.max(0, min - (curMs - startTime.get()));
+    HANDLER.postDelayed(r, dl);
   }
 
   private static final class ViewVis {
