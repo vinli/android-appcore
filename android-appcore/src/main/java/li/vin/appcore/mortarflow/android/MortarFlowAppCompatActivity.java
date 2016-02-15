@@ -627,6 +627,9 @@ public abstract class MortarFlowAppCompatActivity extends AppCompatActivity
       showAb();
     }
 
+    if (icon == -1) actionBar().setIcon(null);
+    if (logo == -1) actionBar().setLogo(null);
+
     if (disableHome) {
       setAbUp(false);
     } else if (up) {
