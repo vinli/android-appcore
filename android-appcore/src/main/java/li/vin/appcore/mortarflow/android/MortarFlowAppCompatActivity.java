@@ -682,6 +682,7 @@ public abstract class MortarFlowAppCompatActivity extends AppCompatActivity
     if (drawerToggle != null) {
       drawerToggle.setDrawerIndicatorEnabled(false);
     }
+    actionBar().setDisplayHomeAsUpEnabled(false);
     actionBar().setHomeButtonEnabled(true);
     actionBar().setIcon(resId);
   }
@@ -690,6 +691,7 @@ public abstract class MortarFlowAppCompatActivity extends AppCompatActivity
     if (drawerToggle != null) {
       drawerToggle.setDrawerIndicatorEnabled(false);
     }
+    actionBar().setDisplayHomeAsUpEnabled(false);
     actionBar().setHomeButtonEnabled(true);
     actionBar().setLogo(resId);
   }
