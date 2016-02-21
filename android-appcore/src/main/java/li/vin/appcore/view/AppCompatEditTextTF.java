@@ -22,4 +22,22 @@ public class AppCompatEditTextTF extends android.support.v7.widget.AppCompatEdit
     super(context, attrs, defStyleAttr);
     initializer.init(this, context, attrs);
   }
+
+  @Override
+  public void setSelection(int index) {
+    try {
+      super.setSelection(index);
+    } catch (Exception ignored) {
+      // stop older android versions from crashing on certain accessibility actions
+    }
+  }
+
+  @Override
+  public void setSelection(int start, int stop) {
+    try {
+      super.setSelection(start, stop);
+    } catch (Exception ignored) {
+      // stop older android versions from crashing on certain accessibility actions
+    }
+  }
 }
