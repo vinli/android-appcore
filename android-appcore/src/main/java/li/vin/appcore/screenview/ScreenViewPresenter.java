@@ -22,6 +22,7 @@ public class ScreenViewPresenter<V extends View & ScreenView> extends ViewPresen
 
   private SparseArray<Parcelable> mainContainer;
   private Map<Integer, SparseArray<Parcelable>> dynamicStates;
+  private Bundle receivedTransientParams;
 
   private final DynamicViewListener dynamicViewListener = new DynamicViewListener() {
     @Override
@@ -93,6 +94,10 @@ public class ScreenViewPresenter<V extends View & ScreenView> extends ViewPresen
     DynamicViewManager dynamicViewManager = getDynamicViewManager();
     if (dynamicViewManager instanceof ReceivesTransientParams) {
       ((ReceivesTransientParams) dynamicViewManager).onReceiveTransientParams(params);
+    }
+
+    if (shouldPersistReceivedTransientParams() && params != null && !params.isEmpty()) {
+      receivedTransientParams = params;
     }
   }
 
@@ -171,9 +176,25 @@ public class ScreenViewPresenter<V extends View & ScreenView> extends ViewPresen
   }
 
   protected void onSaveInstanceState(@NonNull V v, @NonNull Bundle outState) {
+    if (shouldPersistReceivedTransientParams() && //
+        receivedTransientParams != null && !receivedTransientParams.isEmpty()) {
+      String key = getClass().getSimpleName() + //
+          "_persistedTransientParamsKey_" + //
+          getPersistedTransientParamsKey();
+      outState.putBundle(key, receivedTransientParams);
+    }
   }
 
   protected void onRestoreInstanceState(@NonNull V v, @NonNull Bundle inState) {
+    if (shouldPersistReceivedTransientParams()) {
+      String key = getClass().getSimpleName() + //
+          "_persistedTransientParamsKey_" + //
+          getPersistedTransientParamsKey();
+      Bundle params = inState.getBundle(key);
+      if (params != null && !params.isEmpty()) {
+        onReceiveTransientParams(v, params);
+      }
+    }
   }
 
   protected boolean onActivityResult(@NonNull V v, int requestCode, int resultCode, Intent data) {
@@ -249,5 +270,14 @@ public class ScreenViewPresenter<V extends View & ScreenView> extends ViewPresen
   @Nullable
   protected DynamicViewManager getDynamicViewManager() {
     return null;
+  }
+
+  protected boolean shouldPersistReceivedTransientParams() {
+    return !getPersistedTransientParamsKey().isEmpty();
+  }
+
+  @NonNull
+  protected String getPersistedTransientParamsKey() {
+    return "";
   }
 }
