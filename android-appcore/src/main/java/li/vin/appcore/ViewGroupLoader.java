@@ -23,22 +23,36 @@ public final class ViewGroupLoader implements Action0 {
 
   public static <T> Observable<T> wrapAndGo(@NonNull Observable<T> wrapped, @NonNull ViewGroup root,
       @LayoutRes int progressLayout) {
-    ViewGroupLoader vgl = new ViewGroupLoader(root, progressLayout, 0, 0);
+    ViewGroupLoader vgl = new ViewGroupLoader(root, progressLayout, 0, 0, 0, 0);
     return wrapped.doOnTerminate(vgl).doOnUnsubscribe(vgl);
   }
 
   public static <T> Observable<T> wrapAndGo(@NonNull Observable<T> wrapped, @NonNull ViewGroup root,
       @LayoutRes int progressLayout, long delay, long min) {
-    ViewGroupLoader vgl = new ViewGroupLoader(root, progressLayout, delay, min);
+    ViewGroupLoader vgl = new ViewGroupLoader(root, progressLayout, delay, min, 0, 0);
     return wrapped.doOnTerminate(vgl).doOnUnsubscribe(vgl);
   }
 
   public static <T> Observable<T> wrapAndGo(@NonNull Observable<T> wrapped, @NonNull ViewGroup root,
       @LayoutRes int progressLayout, long delay, long min, long delaySub) {
-    ViewGroupLoader vgl = new ViewGroupLoader(root, progressLayout, delay, min);
-    return wrapped.doOnTerminate(vgl)
-        .doOnUnsubscribe(vgl)
-        .delaySubscription(delaySub, TimeUnit.MILLISECONDS);
+    ViewGroupLoader vgl = new ViewGroupLoader(root, progressLayout, delay, min, 0, 0);
+    Observable<T> obs = wrapped.doOnTerminate(vgl).doOnUnsubscribe(vgl);
+    if (delaySub > 0) {
+      obs = obs.delaySubscription(delaySub, TimeUnit.MILLISECONDS);
+    }
+    return obs;
+  }
+
+  public static <T> Observable<T> wrapAndGo(@NonNull Observable<T> wrapped, @NonNull ViewGroup root,
+      @LayoutRes int progressLayout, long delay, long min, long delaySub, //
+      int rootWidth, int rootHeight) {
+    ViewGroupLoader vgl = new ViewGroupLoader(root, progressLayout, delay, min, //
+        rootWidth, rootHeight);
+    Observable<T> obs = wrapped.doOnTerminate(vgl).doOnUnsubscribe(vgl);
+    if (delaySub > 0) {
+      obs = obs.delaySubscription(delaySub, TimeUnit.MILLISECONDS);
+    }
+    return obs;
   }
 
   private static final Handler HANDLER = new Handler(Looper.getMainLooper());
@@ -81,12 +95,14 @@ public final class ViewGroupLoader implements Action0 {
   private View progressIndicator;
   private long delay;
   private long min;
+  private final int rootWidth;
+  private final int rootHeight;
   private final List<ViewVis> loadingViews = new ArrayList<>();
 
   private final AtomicLong startTime = new AtomicLong();
 
   private ViewGroupLoader(@NonNull ViewGroup root, @LayoutRes int progressLayout, long delay,
-      long min) {
+      long min, int rootWidth, int rootHeight) {
     if (Thread.currentThread() != Looper.getMainLooper().getThread()) {
       throw new RuntimeException("not on UI thread.");
     }
@@ -96,6 +112,8 @@ public final class ViewGroupLoader implements Action0 {
         LayoutInflater.from(root.getContext()).inflate(progressLayout, root, false);
     this.delay = delay;
     this.min = min;
+    this.rootWidth = rootWidth;
+    this.rootHeight = rootHeight;
 
     startLoading();
   }
@@ -106,8 +124,12 @@ public final class ViewGroupLoader implements Action0 {
       return;
     }
 
-    int rootW = root.getWidth();
-    int rootH = root.getHeight();
+    int rootW = rootWidth > 0
+        ? rootWidth
+        : root.getWidth();
+    int rootH = rootHeight > 0
+        ? rootHeight
+        : root.getHeight();
     if (rootW == 0 || rootH == 0 || delay > 0) {
       long delay = this.delay;
       this.delay = 0;
