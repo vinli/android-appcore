@@ -52,6 +52,7 @@ import li.vin.appcore.mortarflow.Screen;
 import li.vin.appcore.mortarflow.presenter.ActionBarPresenter;
 import li.vin.appcore.mortarflow.presenter.SplashPresenter;
 import li.vin.appcore.screenview.DrawerScreenView;
+import li.vin.appcore.screenview.HandlesTransientParams;
 import li.vin.appcore.screenview.SplashScreenView;
 import li.vin.appcore.segue.Segues;
 import mortar.MortarScope;
@@ -66,7 +67,7 @@ import static li.vin.appcore.mortarflow.android.RequestPermissionService.getRequ
  * Created by christophercasey on 9/7/15.
  */
 public abstract class MortarFlowAppCompatActivity extends AppCompatActivity
-    implements ActionBarPresenter.Activity, Flow.Dispatcher {
+    implements ActionBarPresenter.Activity, Flow.Dispatcher, HandlesTransientParams {
 
   private MortarScope activityScope;
   private int[] actionBarMenuRes;
@@ -190,6 +191,17 @@ public abstract class MortarFlowAppCompatActivity extends AppCompatActivity
     container.dispatch(traversal, callback);
   }
 
+  @Nullable
+  @Override
+  public Bundle onProvideTransientParams(@NonNull View view, @Nullable Bundle params) {
+    return null;
+  }
+
+  @Override
+  public void onReceiveTransientParams(@Nullable Bundle params) {
+    // no-op
+  }
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -283,6 +295,7 @@ public abstract class MortarFlowAppCompatActivity extends AppCompatActivity
 
     container = (FramePathContainerView) findViewById(getPathContainerViewResId());
     container.init(getPathContextFactory(), getSegues());
+    container.setTransientParamHandler(this);
     flowDelegate = FlowDelegate.onCreate(nonConfig, getIntent(), savedInstanceState, getParceler(),
         getDefaultHistory(), this);
 
@@ -573,6 +586,8 @@ public abstract class MortarFlowAppCompatActivity extends AppCompatActivity
     }
 
     super.onDestroy();
+
+    if (container != null) container.setTransientParamHandler(null);
   }
 
   protected final ActionBar actionBar() {

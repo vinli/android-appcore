@@ -62,12 +62,26 @@ public class SimplePathContainer extends PathContainer {
     }
     traversalState.restoreViewState(newView);
 
+    boolean containerHandlesTransientParams = containerView instanceof HandlesTransientParams;
+    boolean viewProvidedParams = false;
     Bundle optParams = null;
+
     if (fromView instanceof HandlesTransientParams) {
       optParams = ((HandlesTransientParams) fromView).onProvideTransientParams(newView, null);
+      viewProvidedParams = optParams != null && !optParams.isEmpty();
+    }
+    if (containerHandlesTransientParams) {
+      Bundle b = ((HandlesTransientParams) containerView).onProvideTransientParams(newView, null);
+      if (b != null && !b.isEmpty()) {
+        if (optParams == null) optParams = new Bundle();
+        optParams.putAll(b);
+      }
     }
     if (newView instanceof HandlesTransientParams) {
       ((HandlesTransientParams) newView).onReceiveTransientParams(optParams);
+    }
+    if (containerHandlesTransientParams && viewProvidedParams) {
+      ((HandlesTransientParams) containerView).onReceiveTransientParams(optParams);
     }
 
     if (fromView == null || direction == REPLACE) {

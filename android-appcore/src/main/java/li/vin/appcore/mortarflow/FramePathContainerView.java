@@ -2,10 +2,13 @@ package li.vin.appcore.mortarflow;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import flow.Flow;
@@ -23,14 +26,17 @@ import li.vin.appcore.mortarflow.android.HandlesSearchSuggestions;
 import li.vin.appcore.mortarflow.android.OptionsItemSelectedSupport;
 import li.vin.appcore.mortarflow.android.PauseResumeSupport;
 import li.vin.appcore.mortarflow.android.SearchSuggestionsSupport;
+import li.vin.appcore.screenview.HandlesTransientParams;
 import li.vin.appcore.segue.Segues;
 
 /** A FrameLayout that can show screens for a {@link Flow}. */
 public class FramePathContainerView extends FrameLayout
     implements PathContainerView, HandlesBack, HandlesActivityResult, HandlesOptionsItemSelected,
-    HandlesSearchSuggestions, HandlesPauseResume {
+    HandlesSearchSuggestions, HandlesPauseResume, HandlesTransientParams {
   private SimplePathContainer container;
   private boolean disabled;
+
+  private HandlesTransientParams transientParamHandler;
 
   public FramePathContainerView(Context context, AttributeSet attrs) {
     super(context, attrs);
@@ -117,5 +123,25 @@ public class FramePathContainerView extends FrameLayout
 
   private void checkInit() {
     if (container == null) throw new IllegalStateException("needs init.");
+  }
+
+  public void setTransientParamHandler(HandlesTransientParams transientParamHandler) {
+    this.transientParamHandler = transientParamHandler;
+  }
+
+  @Nullable
+  @Override
+  public Bundle onProvideTransientParams(@NonNull View view, Bundle params) {
+    if (transientParamHandler != null) {
+      return transientParamHandler.onProvideTransientParams(view, params);
+    }
+    return null;
+  }
+
+  @Override
+  public void onReceiveTransientParams(@Nullable Bundle params) {
+    if (transientParamHandler != null) {
+      transientParamHandler.onReceiveTransientParams(params);
+    }
   }
 }
