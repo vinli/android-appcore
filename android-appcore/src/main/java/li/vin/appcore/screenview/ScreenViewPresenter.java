@@ -24,6 +24,10 @@ public class ScreenViewPresenter<V extends View & ScreenView> extends ViewPresen
   private Map<Integer, SparseArray<Parcelable>> dynamicStates;
   private Bundle receivedTransientParams;
 
+  /*package*/ V _v() {
+    return getView();
+  }
+
   private final DynamicViewListener dynamicViewListener = new DynamicViewListener() {
     @Override
     public void onDynamicViewCreate(@NonNull View view) {
