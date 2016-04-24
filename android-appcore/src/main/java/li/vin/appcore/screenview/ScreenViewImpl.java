@@ -17,10 +17,10 @@ class ScreenViewImpl<V extends View & ScreenView, VP extends ScreenViewPresenter
 
   void onCreateImpl(@NonNull V v, @NonNull Context context) {
     if (!v.isInEditMode()) {
-      VP presenter = getPresenter(v, true);
       allowScreenViewCalls = true;
       v.onCreate(context);
       allowScreenViewCalls = false;
+      VP presenter = getPresenter(v, true);
       if (presenter != null) presenter.onCreate(v);
     }
   }
