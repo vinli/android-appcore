@@ -191,10 +191,11 @@ class ScreenViewImpl<V extends View & ScreenView, VP extends ScreenViewPresenter
   private VP getPresenter(@NonNull V v, boolean dropViewIfDiffers) {
     //noinspection unchecked
     VP p = (VP) v.getPresenter();
-    if (p != null && p._v() != null && p._v() != v) {
+    V viewToDrop;
+    if (p != null && (viewToDrop = p._v()) != null && viewToDrop != v) {
       if (dropViewIfDiffers) {
-        p.dropView(p._v());
-        p.onDetachedFromWindow(p._v());
+        p.dropView(viewToDrop);
+        p.onDetachedFromWindow(viewToDrop);
       } else {
         return null;
       }
