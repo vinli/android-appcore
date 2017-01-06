@@ -14,6 +14,7 @@ import butterknife.ButterKnife;
 class ScreenViewImpl<V extends View & ScreenView, VP extends ScreenViewPresenter<V>> {
 
   private boolean allowScreenViewCalls;
+  private boolean presenterAttachedToWindow = false;
 
   void onCreateImpl(@NonNull V v, @NonNull Context context) {
     if (!v.isInEditMode()) {
@@ -38,6 +39,8 @@ class ScreenViewImpl<V extends View & ScreenView, VP extends ScreenViewPresenter
   @Nullable
   public Bundle onProvideTransientParamsImpl(@NonNull V v, @NonNull android.view.View view,
       @Nullable Bundle params) {
+    if (!presenterAttachedToWindow) this.onAttachedToWindowImpl(v);
+
     VP presenter = getPresenter(v, false);
     // SUPER
     allowScreenViewCalls = true;
@@ -53,6 +56,8 @@ class ScreenViewImpl<V extends View & ScreenView, VP extends ScreenViewPresenter
   }
 
   public void onReceiveTransientParamsImpl(@NonNull V v, @Nullable Bundle params) {
+    if (!presenterAttachedToWindow) this.onAttachedToWindowImpl(v);
+
     VP presenter = getPresenter(v, false);
     // SUPER
     allowScreenViewCalls = true;
@@ -65,6 +70,8 @@ class ScreenViewImpl<V extends View & ScreenView, VP extends ScreenViewPresenter
   }
 
   public void onAttachedToWindowImpl(@NonNull V v) {
+    if (presenterAttachedToWindow) return;
+
     VP presenter = getPresenter(v, true);
     // SUPER
     allowScreenViewCalls = true;
@@ -73,14 +80,18 @@ class ScreenViewImpl<V extends View & ScreenView, VP extends ScreenViewPresenter
     if (presenter != null) {
       presenter.takeView(v);
       presenter.onAttachedToWindow(v);
+      presenterAttachedToWindow = true;
     }
   }
 
   public void onDetachedFromWindowImpl(@NonNull V v) {
+    if (!presenterAttachedToWindow) this.onAttachedToWindowImpl(v);
+
     VP presenter = getPresenter(v, false);
     if (presenter != null) {
       presenter.dropView(v);
       presenter.onDetachedFromWindow(v);
+      presenterAttachedToWindow = false;
     }
     allowScreenViewCalls = true;
     v.onDetach();
@@ -89,6 +100,8 @@ class ScreenViewImpl<V extends View & ScreenView, VP extends ScreenViewPresenter
   }
 
   protected void onVisibilityChangedImpl(@NonNull V v, @NonNull View changedView, int visibility) {
+    if (!presenterAttachedToWindow) this.onAttachedToWindowImpl(v);
+
     VP presenter = getPresenter(v, false);
     // SUPER
     allowScreenViewCalls = true;
@@ -98,6 +111,8 @@ class ScreenViewImpl<V extends View & ScreenView, VP extends ScreenViewPresenter
   }
 
   public void onSizeChangedImpl(@NonNull V v, int w, int h, int oldw, int oldh) {
+    if (!presenterAttachedToWindow) this.onAttachedToWindowImpl(v);
+
     VP presenter = getPresenter(v, false);
     // SUPER
     allowScreenViewCalls = true;
@@ -108,6 +123,8 @@ class ScreenViewImpl<V extends View & ScreenView, VP extends ScreenViewPresenter
 
   public void dispatchRestoreInstanceStateImpl(@NonNull V v,
       @NonNull SparseArray<Parcelable> container) {
+    if (!presenterAttachedToWindow) this.onAttachedToWindowImpl(v);
+
     VP presenter = getPresenter(v, false);
     // SUPER
     allowScreenViewCalls = true;
@@ -118,6 +135,8 @@ class ScreenViewImpl<V extends View & ScreenView, VP extends ScreenViewPresenter
 
   public void dispatchSaveInstanceStateImpl(@NonNull V v,
       @NonNull SparseArray<Parcelable> container) {
+    if (!presenterAttachedToWindow) this.onAttachedToWindowImpl(v);
+
     VP presenter = getPresenter(v, false);
     // SUPER
     allowScreenViewCalls = true;
@@ -127,6 +146,8 @@ class ScreenViewImpl<V extends View & ScreenView, VP extends ScreenViewPresenter
   }
 
   public Parcelable onRestoreInstanceStateImpl(@NonNull V v, Parcelable state) {
+    if (!presenterAttachedToWindow) this.onAttachedToWindowImpl(v);
+
     VP presenter = getPresenter(v, false);
     // SUPER
     Bundle b = (state instanceof Bundle)
@@ -145,6 +166,8 @@ class ScreenViewImpl<V extends View & ScreenView, VP extends ScreenViewPresenter
   }
 
   public Parcelable onSaveInstanceStateImpl(@NonNull V v) {
+    if (!presenterAttachedToWindow) this.onAttachedToWindowImpl(v);
+
     VP presenter = getPresenter(v, false);
     // SUPER
     allowScreenViewCalls = true;
@@ -160,26 +183,36 @@ class ScreenViewImpl<V extends View & ScreenView, VP extends ScreenViewPresenter
   }
 
   public boolean onActivityResultImpl(@NonNull V v, int requestCode, int resultCode, Intent data) {
+    if (!presenterAttachedToWindow) this.onAttachedToWindowImpl(v);
+
     VP presenter = getPresenter(v, false);
     return presenter != null && presenter.onActivityResult(v, requestCode, resultCode, data);
   }
 
   public boolean onBackPressedImpl(@NonNull V v) {
+    if (!presenterAttachedToWindow) this.onAttachedToWindowImpl(v);
+
     VP presenter = getPresenter(v, false);
     return presenter != null && presenter.onBackPressed(v);
   }
 
   public boolean onOptionsItemSelectedImpl(@NonNull V v, MenuItem item) {
+    if (!presenterAttachedToWindow) this.onAttachedToWindowImpl(v);
+
     VP presenter = getPresenter(v, false);
     return presenter != null && presenter.onOptionsItemSelected(v, item);
   }
 
   public void onPause(@NonNull V v) {
+    if (!presenterAttachedToWindow) this.onAttachedToWindowImpl(v);
+
     VP presenter = getPresenter(v, false);
     if (presenter != null) presenter.onPause(v);
   }
 
   public void onResume(@NonNull V v) {
+    if (!presenterAttachedToWindow) this.onAttachedToWindowImpl(v);
+
     VP presenter = getPresenter(v, false);
     if (presenter != null) presenter.onResume(v);
   }
