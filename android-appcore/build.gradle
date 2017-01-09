@@ -18,7 +18,7 @@ apply from: file('../gradle/javadoc.gradle')
 
 android {
   compileSdkVersion 23
-  buildToolsVersion "23.0.2"
+  buildToolsVersion "23.0.3"
 
   defaultConfig {
     minSdkVersion 16
@@ -45,9 +45,9 @@ android {
 
 dependencies {
   // support
-  compile 'com.android.support:appcompat-v7:+'
-  compile 'com.android.support:recyclerview-v7:+'
-  compile 'com.android.support:design:+'
+  compile 'com.android.support:appcompat-v7:23.4.0'
+  compile 'com.android.support:recyclerview-v7:23.4.0'
+  compile 'com.android.support:design:23.4.0'
 
   // mortar & flow
   compile 'com.squareup.mortar:mortar:0.19'
