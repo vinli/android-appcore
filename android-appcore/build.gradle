@@ -3,22 +3,16 @@ buildscript {
         mavenCentral()
         jcenter()
     }
-    dependencies {
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
-    }
 }
 
 group = project.property('vinli.groupId')
 version = project.property('vinli.version')
 
 apply plugin: 'com.android.library'
-apply plugin: 'com.neenbedankt.android-apt'
-apply from: file('../gradle/checkstyle.gradle')
-apply from: file('../gradle/javadoc.gradle')
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         minSdkVersion 16
@@ -45,9 +39,9 @@ android {
 
 dependencies {
     // support
-    compile 'com.android.support:design:25.3.1'
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:recyclerview-v7:25.3.1'
+    compile 'com.android.support:design:25.4.0'
+    compile 'com.android.support:appcompat-v7:25.4.0'
+    compile 'com.android.support:recyclerview-v7:25.4.0'
 
     // mortar & flow
     compile 'com.squareup.mortar:mortar:0.19'
@@ -56,7 +50,6 @@ dependencies {
 
     // dagger
     compile 'com.google.dagger:dagger:2.0.1'
-    apt 'com.google.dagger:dagger-compiler:2.0.1'
     compile 'org.glassfish:javax.annotation:10.0-b28'
 
     // json
@@ -70,7 +63,6 @@ dependencies {
 
     // rx
     compile 'io.reactivex:rxjava:1.1.+'
-}
 
-// apply from: file('../gradle/mavenize.gradle')
-// apply from: file('../gradle/bintray-upload.gradle')
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.0.1'
+}
